@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: rsi-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: videodb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./storage/relational-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:6-jammy
+    container_name: rsi-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: catalogdb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./storage/nosql-db/init.js:/docker-entrypoint-initdb.d/init.js
+    restart: unless-stopped
+
+  api-gateway:
+    build: ./backend/api-gateway
+    container_name: rsi-api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      USER_SERVICE_URL: "http://user-service:8001"
+      CATALOG_SERVICE_URL: "http://catalog-service:8002"
+      REC_ENGINE_URL: "http://recommendation-engine:8003"
+    depends_on:
+      - user-service
+      - catalog-service
+      - recommendation-engine
+    restart: unless-stopped
+
+  user-service:
+    build: ./backend/user-service
+    container_name: rsi-user-service
+    ports:
+      - "8001:8001"
+    environment:
+      PG_HOST: "postgres"
+      PG_PORT: "5432"
+      PG_USER: "admin"
+      PG_PASS: "adminpassword"
+      PG_DB: "videodb"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  catalog-service:
+    build: ./backend/catalog-service
+    container_name: rsi-catalog-service
+    ports:
+      - "8002:8002"
+    environment:
+      MONGO_URI: "mongodb://root:rootpassword@mongodb:27017/"
+      MONGO_DB: "catalogdb"
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  recommendation-engine:
+    build: ./backend/recommendation-engine
+    container_name: rsi-recommendation-engine
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  mongodb_data:
