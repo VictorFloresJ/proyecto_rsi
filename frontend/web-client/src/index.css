@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-steam-dark text-steam-text font-sans antialiased selection:bg-steam-blue/30 selection:text-white;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md shadow-glass border border-white/10 rounded-xl;
+  }
+  
+  .glass-button {
+    @apply px-4 py-2 font-semibold transition-all duration-300 rounded-lg backdrop-blur-sm shadow-sm hover:shadow-md hover:-translate-y-[1px];
+  }
+  
+  .glass-button-primary {
+    @apply glass-button bg-gradient-to-r from-[#799905] to-[#536904] text-[#d2efa9] hover:from-[#8ed600] hover:to-[#6aa600] hover:text-white border border-white/10 shadow-[0_0_15px_rgba(121,153,5,0.2)] hover:shadow-[0_0_20px_rgba(142,214,0,0.4)];
+  }
+
+  .glass-button-secondary {
+    @apply glass-button bg-white/5 hover:bg-white/10 text-steam-text hover:text-white border border-white/5 hover:border-steam-blue/50;
+  }
+}
+
+/* Custom Scrollbar for a steam feel */
+::-webkit-scrollbar {
+  width: 14px;
+}
+::-webkit-scrollbar-track {
+  background: #171a21; 
+}
+::-webkit-scrollbar-thumb {
+  background: #434953; 
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5b626e; 
+}
