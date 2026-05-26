@@ -65,3 +65,6 @@ pnpm-debug.log*
 
 # Docker local data if any
 *.db
+
+# Exclude project rules
+SYSTEM_CONTEXT.md

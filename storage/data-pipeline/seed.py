@@ -32,7 +32,7 @@ if not STEAM_API_KEY:
 
 NUM_USERS = 10
 NUM_RATINGS = 60
-TARGET_GAMES = 100
+TARGET_GAMES = 500
 
 def get_pg_connection():
     max_retries = 5
@@ -73,7 +73,7 @@ def clean_html(raw_html):
 def fetch_top_steam_games(limit=100):
     print("Fetching top games from SteamSpy...")
     try:
-        response = requests.get("https://steamspy.com/api.php?request=top100in2weeks", timeout=10)
+        response = requests.get("https://steamspy.com/api.php?request=all&page=0", timeout=10)
         data = response.json()
         app_ids = list(data.keys())
         # Shuffle to get a good mix if we limit it
